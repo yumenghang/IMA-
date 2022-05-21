@@ -11,9 +11,8 @@
 &emsp;&emsp;&emsp;&emsp;physical port full name, #2\
 &emsp;&emsp;&emsp;&emsp;NameDef, #3\
 &emsp;&emsp;&emsp;&emsp;GuidDef, #4\
-&emsp;&emsp;&emsp;&emsp;物理端口方向, #5\
+&emsp;&emsp;&emsp;&emsp;物理端口方向, #5 表示该物理端口是用于发送消息、接收消息还是同时发送与接收消息（注：ARINC-664与CAN协议的物理端口为双工，ARINC-429与Analog协议的物理端口为单工）\
 &emsp;&emsp;&emsp;&emsp;该物理端口所在物理设备名称, #6\
-&emsp;&emsp;&emsp;&emsp;]\
 &emsp;&emsp;]\
 
 ### 
