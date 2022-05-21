@@ -33,12 +33,19 @@
 &emsp;&emsp;&emsp;&emsp;交换机名称(注：一共有8台交换机，分别是：ARS_1A、ARS_2A、ARS_1B、ARS_2B、CCR_LEFT.ACS_LA、CCR_RIGHT.ACS_RA、CCR_LEFT.ACS_LB、CCR_RIGHT.ACS_RB), #0\
 &emsp;&emsp;&emsp;&emsp;NameDef, #1\
 &emsp;&emsp;&emsp;&emsp;GuidDef, #2\
-&emsp;&emsp;&emsp;&emsp;[ 25*[ physical port full name ] ], #3\
+&emsp;&emsp;&emsp;&emsp;[ physical port full name, ..., physical port full name  ], #3 （注：交换机内除电源接口外，共25个ARINC-664协议的物理端口）\
 &emsp;&emsp;]
 
 ### Dict: RDIU_information
-键（key）：物理端口在邻接矩阵physical_ports_adjacent_matrix中的index\
-值（value）：物理端口的全称，physical port full name的名称\
+键（key）：RDIU名称(注：一共有16台交换机，分别是：RDIU_01、RDIU_02、RDIU_03、RDIU_04、RDIU_05、RDIU_06、RDIU_07、RDIU_08、RDIU_09、RDIU_10、RDIU_11、RDIU_12、RDIU_13、RDIU_14、RDIU_15、RDIU_16)\
+值（value）：为一列表，按以下格式存储对应RDIU的相关信息：\
+&emsp;&emsp;[\
+&emsp;&emsp;&emsp;&emsp;RDIU名称, #0\
+&emsp;&emsp;&emsp;&emsp;RDIU标识符, #1\
+&emsp;&emsp;&emsp;&emsp;NameDef, #2\
+&emsp;&emsp;&emsp;&emsp;GuidDef, #3\
+&emsp;&emsp;&emsp;&emsp;[ physical port full name, ..., physical port full name ], #4\
+&emsp;&emsp;]
 
 ### Dict: messages_info
 键（key）：消息（包括：ARINC-664消息、ARINC-429消息、CAN消息、Analog消息）的标识符\
