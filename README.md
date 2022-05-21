@@ -3,6 +3,18 @@
 ## 数据文件
 
 ## Dict: physical_ports_information
+键（key）：物理端口的全称，表示为：physical port full name。形式为：物理端口所属物理设备+"."+物理端口名，如物理设备IDURIGHTOUTBOARD上的A端口--IDURIGHTOUTBOARD.A，或物理端口所属机柜+"."+物理端口所属设备+"."+物理端口名，如机柜CCR_LEFT中物理设备GPM_L6上的A端口--CCR_LEFT.GPM_L6.A\
+值（value）：为一列表，按以下格式存储对应物理端口的相关信息：\
+&emsp;&emsp;[\
+&emsp;&emsp;&emsp;&emsp;物理端口类型, #0\
+&emsp;&emsp;&emsp;&emsp;物理端口标识符, #1\
+&emsp;&emsp;&emsp;&emsp;physical port full name, #2\
+&emsp;&emsp;&emsp;&emsp;NameDef, #3\
+&emsp;&emsp;&emsp;&emsp;GuidDef, #4\
+&emsp;&emsp;&emsp;&emsp;物理端口方向, #5\
+&emsp;&emsp;&emsp;&emsp;该物理端口所在物理设备名称, #6\
+&emsp;&emsp;&emsp;&emsp;]\
+&emsp;&emsp;]\
 
 ### 
 
