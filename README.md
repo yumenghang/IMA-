@@ -10,6 +10,7 @@
 
 ### Dict: messages_info
 键（key）：消息（包括：ARINC-664消息、ARINC-429消息、CAN消息、Analog消息）的标识符
+
 值（value）：为一列表，按以下格式存储对应消息的相关信息：
     [
         发送端消息的类型, #0
