@@ -21,12 +21,12 @@
 记录物理端口（除电源接口外的所有物理端口）之间的连接关系\
 
 ### Dict: physical_ports_index
-键（key）：物理端口的全称，physical port full name的名称，如：CCR_LEFT.GPM_L6.A，value为：该端口在邻接矩阵中的index\
+键（key）：物理端口的全称，physical port full name，如：CCR_LEFT.GPM_L6.A\
 值（value）：该物理端口在邻接矩阵physical_ports_adjacent_matrix中的index\
 
 ### Dict: physical_ports_index_reversed
 键（key）：物理端口在邻接矩阵physical_ports_adjacent_matrix中的index\
-值（value）：物理端口的全称，physical port full name的名称\
+值（value）：物理端口的全称，physical port full name\
 
 ### Dict: switches_information
 键（key）：交换机的标识符\
@@ -69,5 +69,27 @@
 &emsp;&emsp;&emsp;&emsp;] #9\
 &emsp;&emsp;]
 
-#
-#
+## 全局数据文件
+统计全局数据（不区分A、B网）中的物理端口、消息、连接关系等的信息并存储
+
+### 二维数组：arinc664_physical_ports_adjacent_matrix_for_A_NET
+记录A网中ARINC-664协议物理端口之间的连接关系\
+
+### Dict: arinc664_physical_ports_index_for_A_NET
+键（key）：A网中ARINC-664协议物理端口的全称，physical port full name，如：CCR_LEFT.GPM_L6.A\
+值（value）：该物理端口在邻接矩阵arinc664_physical_ports_adjacent_matrix_for_A_NET中的index\
+
+### Dict: arinc664_physical_ports_index_reversed_for_A_NET
+键（key）：A网中ARINC-664协议物理端口在邻接矩阵arinc664_physical_ports_adjacent_matrix_for_A_NET中的index\
+值（value）：物理端口的全称，physical port full name\
+
+### 二维数组：arinc664_physical_ports_adjacent_matrix_for_B_NET
+记录B网中ARINC-664协议物理端口之间的连接关系\
+
+### Dict: arinc664_physical_ports_index_for_B_NET
+键（key）：B网中ARINC-664协议物理端口的全称，physical port full name，如：CCR_LEFT.GPM_L6.B\
+值（value）：该物理端口在邻接矩阵arinc664_physical_ports_adjacent_matrix_for_B_NET中的index\
+
+### Dict: arinc664_physical_ports_index_reversed_for_B_NET
+键（key）：B网中ARINC-664协议物理端口在邻接矩阵arinc664_physical_ports_adjacent_matrix_for_B_NET中的index\
+值（value）：物理端口的全称，physical port full name\
