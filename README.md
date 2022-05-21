@@ -69,8 +69,8 @@
 &emsp;&emsp;&emsp;&emsp;] #9\
 &emsp;&emsp;]
 
-## 全局数据文件
-统计全局数据（不区分A、B网）中的物理端口、消息、连接关系等的信息并存储
+## A、B网中的数据文件
+分别统计A、B网中的物理端口、消息、连接关系等的信息并存储
 
 ### 二维数组：arinc664_physical_ports_adjacent_matrix_for_A_NET
 记录A网中ARINC-664协议物理端口之间的连接关系\
