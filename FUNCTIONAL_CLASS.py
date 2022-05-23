@@ -1,6 +1,7 @@
 from xml.dom.minidom import parse
 import numpy as np
 import os
+SAVE_FILE = "INTERMEDIATE_FILE/"
 
 class GET_INFO:
     def __init__(self, root_path):
@@ -234,6 +235,8 @@ class PARSE_XML:
             class_xml_file = self.xml_file[:self.xml_file.find("Instances")] + "Classes/" + self.root_node.getAttribute("NameDef") + ".xml"  # 该Hardware文件对应的Class文件
             get_direction = GET_DIRECTION(class_xml_file)
             physical_ports_direction = get_direction.get_direction()
+            get_rate = GET_RATE(class_xml_file)
+            physical_ports_rate = get_rate.get_rate()
             phys_port_nodes = self.root_node.childNodes  # 根节点的子节点列表，包括所有物理端口标签
             for phys_port_node in phys_port_nodes:
                 if phys_port_node.nodeName != "#text":
@@ -244,12 +247,15 @@ class PARSE_XML:
                         phys_port_node.getAttribute("NameDef"),
                         phys_port_node.getAttribute("GuidDef"),
                         physical_ports_direction[phys_port_node.getAttribute("GuidDef")],  # 物理端口方向
-                        self.root_node.getAttribute("Name")  # 物理设备名称
+                        self.root_node.getAttribute("Name"), # 物理设备名称
+                        physical_ports_rate[phys_port_node.getAttribute("GuidDef")] # 物理端口的速率
                         ]
         elif self.root_node.nodeName == "RIU":  # 物理设备为RDIU
             class_xml_file = self.xml_file[:self.xml_file.find("Instances")] + "Classes/" + self.root_node.getAttribute("NameDef") + ".xml"  # 该Hardware文件对应的Class文件
             get_direction = GET_DIRECTION(class_xml_file)
             physical_ports_direction = get_direction.get_direction()
+            get_rate = GET_RATE(class_xml_file)
+            physical_ports_rate = get_rate.get_rate()
             phys_port_nodes = self.root_node.childNodes
             phys_port_list = []
             for phys_port_node in phys_port_nodes:
@@ -261,7 +267,8 @@ class PARSE_XML:
                         phys_port_node.getAttribute("NameDef"),
                         phys_port_node.getAttribute("GuidDef"),
                         physical_ports_direction[phys_port_node.getAttribute("GuidDef")],  # 物理端口方向
-                        self.root_node.getAttribute("Name")  # 物理设备名称
+                        self.root_node.getAttribute("Name"), # 物理设备名称
+                        physical_ports_rate[phys_port_node.getAttribute("GuidDef")],  # 物理端口的速率
                         ]
                     if phys_port_node.nodeName != "PwrPhysPort":  # 电源接口不必统计在RDIU信息哈希表中
                         phys_port_list.append(hard_ware + "." + phys_port_node.getAttribute("Name"))
@@ -276,6 +283,8 @@ class PARSE_XML:
             class_xml_file = self.xml_file[:self.xml_file.find("Instances")] + "Classes/" + self.root_node.getAttribute("NameDef") + ".xml"  # 该Hardware文件对应的Class文件
             get_direction = GET_DIRECTION(class_xml_file)
             physical_ports_direction = get_direction.get_direction()
+            get_rate = GET_RATE(class_xml_file)
+            physical_ports_rate = get_rate.get_rate()
             phys_port_nodes = self.root_node.childNodes
             phys_port_list = []
             if self.root_node.getAttribute("Network") == "A":
@@ -287,7 +296,8 @@ class PARSE_XML:
                     None,
                     None,
                     "Bidirection",  # 物理端口方向
-                    hard_ware  # 物理设备名称
+                    hard_ware, # 物理设备名称
+                    100,  # 物理端口的速率
                 ]
             if self.root_node.getAttribute("Network") == "B":
                 phys_port_list.append(hard_ware + ".B")  # 交换机有一个.B的物理端口
@@ -298,7 +308,8 @@ class PARSE_XML:
                     None,
                     None,
                     "Bidirection",  # 物理端口方向
-                    hard_ware  # 物理设备名称
+                    hard_ware, # 物理设备名称
+                    100,  # 物理端口的速率
                 ]
             for phys_port_node in phys_port_nodes:
                 if phys_port_node.nodeName != "#text":
@@ -309,7 +320,8 @@ class PARSE_XML:
                         phys_port_node.getAttribute("NameDef"),
                         phys_port_node.getAttribute("GuidDef"),
                         physical_ports_direction[phys_port_node.getAttribute("GuidDef")],  # 物理端口方向
-                        hard_ware  # 物理设备名称
+                        hard_ware, # 物理设备名称
+                        physical_ports_rate[phys_port_node.getAttribute("GuidDef")],  # 物理端口的速率
                         ]
                     if phys_port_node.nodeName != "PwrPhysPort":  # 电源接口不必统计在交换机信息哈希表中
                         phys_port_list.append(hard_ware + "." + phys_port_node.getAttribute("Name"))
@@ -323,6 +335,8 @@ class PARSE_XML:
             class_xml_file = self.xml_file[:self.xml_file.find("Instances")] + "Classes/" + self.root_node.getAttribute("NameDef") + ".xml"  # 该Hardware文件对应的Class文件
             get_direction = GET_DIRECTION(class_xml_file)
             physical_ports_direction = get_direction.get_direction()
+            get_rate = GET_RATE(class_xml_file)
+            physical_ports_rate = get_rate.get_rate()
             phys_port_nodes = self.root_node.childNodes
             phys_port_list = []
             if self.root_node.getAttribute("Network") == "A":
@@ -334,7 +348,8 @@ class PARSE_XML:
                     None,
                     None,
                     "Bidirection",  # 物理端口方向
-                    hard_ware  # 物理设备名称
+                    hard_ware, # 物理设备名称
+                    100,  # 物理端口的速率
                 ]
             if self.root_node.getAttribute("Network") == "B":
                 phys_port_list.append(hard_ware + ".B")  # 交换机有一个.B的物理端口
@@ -345,7 +360,8 @@ class PARSE_XML:
                     None,
                     None,
                     "Bidirection",  # 物理端口方向
-                    hard_ware  # 物理设备名称
+                    hard_ware, # 物理设备名称
+                    100,  # 物理端口的速率
                 ]
             for phys_port_node in phys_port_nodes:
                 if phys_port_node.nodeName != "#text":
@@ -356,7 +372,8 @@ class PARSE_XML:
                         phys_port_node.getAttribute("NameDef"),
                         phys_port_node.getAttribute("GuidDef"),
                         physical_ports_direction[phys_port_node.getAttribute("GuidDef")],  # 物理端口方向
-                        hard_ware  # 物理设备名称
+                        hard_ware, # 物理设备名称
+                        physical_ports_rate[phys_port_node.getAttribute("GuidDef")], # 物理端口的速率
                     ]
                     if phys_port_node.nodeName != "PwrPhysPort":  # 电源接口不必统计在交换机信息哈希表中
                         phys_port_list.append(hard_ware + "." + phys_port_node.getAttribute("Name"))
@@ -373,6 +390,8 @@ class PARSE_XML:
                     class_xml_file = self.xml_file[:self.xml_file.find("Instances")] + "Classes/" + device_node.getAttribute("NameDef") + ".xml"  # 该Hardware文件对应的Class文件
                     get_direction = GET_DIRECTION(class_xml_file)
                     physical_ports_direction = get_direction.get_direction()
+                    get_rate = GET_RATE(class_xml_file)
+                    physical_ports_rate = get_rate.get_rate()
                     phys_port_nodes = device_node.childNodes
                     phys_port_list = []
                     if device_node.getAttribute("Name") in ["ACS_LA", "ACS_RA"]:
@@ -385,7 +404,8 @@ class PARSE_XML:
                             None,
                             None,
                             "Bidirection",  # 物理端口方向
-                            self.root_node.getAttribute("Name") + "." + device_node.getAttribute("Name")  # 物理设备名称
+                            self.root_node.getAttribute("Name") + "." + device_node.getAttribute("Name"), # 物理设备名称
+                            100,  # 物理端口的速率
                         ]
                     if device_node.getAttribute("Name") in ["ACS_LB", "ACS_RB"]:
                         phys_port_list.append(self.root_node.getAttribute("Name") + "." + device_node.getAttribute("Name") + ".B")
@@ -397,7 +417,8 @@ class PARSE_XML:
                             None,
                             None,
                             "Bidirection",  # 物理端口方向
-                            self.root_node.getAttribute("Name") + "." + device_node.getAttribute("Name")  # 物理设备名称
+                            self.root_node.getAttribute("Name") + "." + device_node.getAttribute("Name"), # 物理设备名称
+                            100,  # 物理端口的速率
                         ]
                     for phys_port_node in phys_port_nodes:
                         if phys_port_node.nodeName != "#text":
@@ -408,7 +429,8 @@ class PARSE_XML:
                                 phys_port_node.getAttribute("NameDef"),
                                 phys_port_node.getAttribute("GuidDef"),
                                 physical_ports_direction[phys_port_node.getAttribute("GuidDef")], # 物理端口方向
-                                self.root_node.getAttribute("Name")  # 物理设备名称
+                                self.root_node.getAttribute("Name"), # 物理设备名称
+                                physical_ports_rate[phys_port_node.getAttribute("GuidDef")],  # 物理端口的速率
                             ]
                             if phys_port_node.nodeName != "PwrPhysPort":  # 电源接口不必统计在交换机信息哈希表中
                                 phys_port_list.append(self.root_node.getAttribute("Name") + "." + device_node.getAttribute("Name") + "." + phys_port_node.getAttribute("Name"))
@@ -422,6 +444,8 @@ class PARSE_XML:
                     class_xml_file = self.xml_file[:self.xml_file.find("Instances")] + "Classes/" + device_node.getAttribute("NameDef") + ".xml"  # 该Hardware文件对应的Class文件
                     get_direction = GET_DIRECTION(class_xml_file)
                     physical_ports_direction = get_direction.get_direction()
+                    get_rate = GET_RATE(class_xml_file)
+                    physical_ports_rate = get_rate.get_rate()
                     phys_port_nodes = device_node.childNodes
                     phys_port_list = []
                     if device_node.getAttribute("Name") in ["ARS_LA", "ARS_RA"]:
@@ -434,7 +458,8 @@ class PARSE_XML:
                             None,
                             None,
                             "Bidirection",  # 物理端口方向
-                            self.root_node.getAttribute("Name") + "." + device_node.getAttribute("Name")  # 物理设备名称
+                            self.root_node.getAttribute("Name") + "." + device_node.getAttribute("Name"), # 物理设备名称
+                            100,  # 物理端口的速率
                         ]
                     if device_node.getAttribute("Name") in ["ARS_LB", "ARS_RB"]:
                         phys_port_list.append(self.root_node.getAttribute("Name") + "." + device_node.getAttribute("Name") + ".B")
@@ -446,7 +471,8 @@ class PARSE_XML:
                             None,
                             None,
                             "Bidirection",  # 物理端口方向
-                            self.root_node.getAttribute("Name") + "." + device_node.getAttribute("Name")  # 物理设备名称
+                            self.root_node.getAttribute("Name") + "." + device_node.getAttribute("Name"), # 物理设备名称
+                            100,  # 物理端口的速率
                         ]
                     for phys_port_node in phys_port_nodes:
                         if phys_port_node.nodeName != "#text":
@@ -457,7 +483,8 @@ class PARSE_XML:
                                 phys_port_node.getAttribute("NameDef"),
                                 phys_port_node.getAttribute("GuidDef"),
                                 physical_ports_direction[phys_port_node.getAttribute("GuidDef")], # 物理端口方向
-                                self.root_node.getAttribute("Name")  # 物理设备名称
+                                self.root_node.getAttribute("Name"), # 物理设备名称
+                                physical_ports_rate[phys_port_node.getAttribute("GuidDef")],  # 物理端口的速率
                             ]
                             if phys_port_node.nodeName != "PwrPhysPort":  # 电源接口不必统计在交换机信息哈希表中
                                 phys_port_list.append(self.root_node.getAttribute("Name") + "." + device_node.getAttribute("Name") + "." + phys_port_node.getAttribute("Name"))
@@ -471,6 +498,8 @@ class PARSE_XML:
                     class_xml_file = self.xml_file[:self.xml_file.find("Instances")] + "Classes/" + device_node.getAttribute("NameDef") + ".xml"  # 该Hardware文件对应的Class文件
                     get_direction = GET_DIRECTION(class_xml_file)
                     physical_ports_direction = get_direction.get_direction()
+                    get_rate = GET_RATE(class_xml_file)
+                    physical_ports_rate = get_rate.get_rate()
                     phys_port_nodes = device_node.childNodes
                     for phys_port_node in phys_port_nodes:
                         if phys_port_node.nodeName != "#text" and phys_port_node.nodeName != "GPMSchedule":
@@ -481,7 +510,8 @@ class PARSE_XML:
                                 phys_port_node.getAttribute("NameDef"),
                                 phys_port_node.getAttribute("GuidDef"),
                                 physical_ports_direction[phys_port_node.getAttribute("GuidDef")], # 物理端口方向
-                                self.root_node.getAttribute("Name")  # 物理设备名称
+                                self.root_node.getAttribute("Name"), # 物理设备名称
+                                physical_ports_rate[phys_port_node.getAttribute("GuidDef")],  # 物理端口的速率
                             ]
 
         #physical_ports_index : 根据物理端口名称查询其在邻接矩阵中的下标
@@ -828,6 +858,45 @@ class GET_DIRECTION:
                     physical_ports_direction[physical_ports_node.getAttribute("Guid")] = "None"
         return physical_ports_direction
 
+class GET_RATE:
+    # 根据传入的xml_file，记录物理端口的传输速率
+    # ARINC-664端口，查询"Speed"属性：单位MB/s
+    # ARINC-429端口，查询"BitRate"属性：LOW——0.0016MB/s;HIGH——0.0125MB/s
+    # CAN端口，查询"BitRate"属性：LOW——0.015625MB/s;MED——0.03125MB/s;HIGH——0.0625MB/s
+    # ARINC-664端口，设置其为：100MB/s
+    def __init__(self, class_xml_file):
+        self.class_xml_file = class_xml_file
+        self.DOMTree = parse(self.class_xml_file)
+        self.root_node = self.DOMTree.documentElement
+
+    # physical_ports_direction: 字典, 键值为物理端口类的Guid，亦即物理端口的GuidDef；value为direction：None、Destination、Source或者Bidirection (其中：None针对电源接口PwrPhysPort)
+    def get_rate(self):
+        physical_ports_rate = dict()
+        physical_ports_nodes = self.root_node.childNodes
+        for physical_ports_node in physical_ports_nodes:
+            if physical_ports_node.nodeName != "#text":
+                if physical_ports_node.nodeName == "AnalogPhysPort":
+                    physical_ports_rate[physical_ports_node.getAttribute("Guid")] = 100
+                elif physical_ports_node.nodeName == "A429PhysPort":
+                    if physical_ports_node.getAttribute("BitRate") == "LOW":
+                        physical_ports_rate[physical_ports_node.getAttribute("Guid")] = 0.0016
+                    if physical_ports_node.getAttribute("BitRate") == "HIGH":
+                        physical_ports_rate[physical_ports_node.getAttribute("Guid")] = 0.0125
+                elif physical_ports_node.nodeName == "CANPhysPort":
+                    if physical_ports_node.getAttribute("CANBitRate") == "LOW":
+                        physical_ports_rate[physical_ports_node.getAttribute("Guid")] = 0.015625
+                    if physical_ports_node.getAttribute("CANBitRate") == "MED":
+                        physical_ports_rate[physical_ports_node.getAttribute("Guid")] = 0.03125
+                    if physical_ports_node.getAttribute("CANBitRate") == "HIGH":
+                        physical_ports_rate[physical_ports_node.getAttribute("Guid")] = 0.0625
+                elif physical_ports_node.nodeName == "AswPhysPort":
+                    physical_ports_rate[physical_ports_node.getAttribute("Guid")] = float(physical_ports_node.getAttribute("Speed"))/8
+                elif physical_ports_node.nodeName == "AesPhysPort":
+                    physical_ports_rate[physical_ports_node.getAttribute("Guid")] = float(physical_ports_node.getAttribute("Speed"))/8
+                elif physical_ports_node.nodeName == "PwrPhysPort":
+                    physical_ports_rate[physical_ports_node.getAttribute("Guid")] = "None"
+        return physical_ports_rate
+
 class GET_MESSAGESIZE_SYSLATENCYWCLIMIT_AND_PHYSICALPORT:
     def __init__(self, class_xml_file, hard_ware):
         self.class_xml_file = class_xml_file
@@ -861,6 +930,7 @@ class GET_MESSAGESIZE_SYSLATENCYWCLIMIT_AND_PHYSICALPORT:
                 elif logical_port_node.childNodes[1].nodeName != "RP":  # 发送端口
                     #TransmissionIntervalMinimum: 传输周期(间隔),其倒数为频率
                     TransmissionIntervalMinimum = float(logical_port_node.childNodes[1].getAttribute("TransmissionIntervalMinimum"))
+                    #TransmissionIntervalMinimum = float(logical_port_node.getAttribute("RefreshPeriod"))
                     tx_port_attribute[logical_port_node.getAttribute("Guid")] = [message_size, physical_port, TransmissionIntervalMinimum]
                 else:
                     RP_node = logical_port_node.getElementsByTagName("RP")[0]
@@ -889,9 +959,11 @@ class GET_MESSAGESIZE_SYSLATENCYWCLIMIT_AND_PHYSICALPORT:
                     # TransmissionIntervalMinimum: 传输周期(间隔),其倒数为频率
                     #因为离散量AnalogPort的发送周期暂时没有查询到，所以现已"None"代替
                     if logical_port_node.nodeName == "AnalogPort":
-                        TransmissionIntervalMinimum = "None"
+                        #TransmissionIntervalMinimum = "None"
+                        TransmissionIntervalMinimum = float(logical_port_node.getAttribute("RefreshPeriod"))
                     else:
                         TransmissionIntervalMinimum = float(logical_port_node.childNodes[1].getAttribute("TransmissionIntervalMinimum"))
+                        #TransmissionIntervalMinimum = float(logical_port_node.getAttribute("RefreshPeriod"))
                     tx_port_attribute[logical_port_node.getAttribute("Guid")] = [message_size, TransmissionIntervalMinimum]
                 else:
                     RP_node = logical_port_node.getElementsByTagName("RP")[0]
@@ -949,7 +1021,7 @@ class COUNT_MESSAGES_PER_PHYSICALPORT:
                         for index in range(len(self.messages_info[message_guid][9])):
                             min_latency = min(min_latency, self.messages_info[message_guid][9][index][2])
                         messages_per_physical_port[physical_port_name][3].append(min_latency)
-                        TransmissionIntervalMinimum = [self.messages_info[message_guid][7]]
+                        TransmissionIntervalMinimum = self.messages_info[message_guid][7]
                         messages_per_physical_port[physical_port_name][4].append(TransmissionIntervalMinimum)
                     else:
                         message_type, message_size = ["A664"], [self.messages_info[message_guid][1]]
@@ -974,7 +1046,7 @@ class COUNT_MESSAGES_PER_PHYSICALPORT:
                                     for index in range(len(self.messages_info[message_guid][9])):
                                         min_latency = min(min_latency, self.messages_info[message_guid][9][index][2])
                                     messages_per_physical_port[RDIU_name][3].append(min_latency)
-                                    TransmissionIntervalMinimum = [self.messages_info[message_guid][7]]
+                                    TransmissionIntervalMinimum = self.messages_info[message_guid][7]
                                     messages_per_physical_port[RDIU_name][4].append(TransmissionIntervalMinimum)
                                 else:
                                     message_type, message_size = [self.messages_info[message_guid][0]], [self.messages_info[message_guid][1]]
@@ -1153,10 +1225,13 @@ class GET_ADJACENT_MATRIX_FOR_A_B_NET:
                 arinc664_physical_ports_adjacent_matrix_for_B_NET[column_index][row_index] = physical_ports_adjacent_matrix[physical_ports_index[name_of_physical_port2]][physical_ports_index[name_of_physical_port1]]
 
         #保存文件
-        np.save('arinc664_physical_ports_index_for_A_NET.npy', arinc664_physical_ports_index_for_A_NET)
-        np.save('arinc664_physical_ports_index_for_B_NET.npy', arinc664_physical_ports_index_for_B_NET)
-        np.save('arinc664_physical_ports_index_reversed_for_A_NET.npy', arinc664_physical_ports_index_reversed_for_A_NET)
-        np.save('arinc664_physical_ports_index_reversed_for_B_NET.npy', arinc664_physical_ports_index_reversed_for_B_NET)
+        isExists = os.path.exists(SAVE_FILE)
+        if not isExists:
+            os.makedirs(SAVE_FILE)
+        np.save(SAVE_FILE+'arinc664_physical_ports_index_for_A_NET.npy', arinc664_physical_ports_index_for_A_NET)
+        np.save(SAVE_FILE+'arinc664_physical_ports_index_for_B_NET.npy', arinc664_physical_ports_index_for_B_NET)
+        np.save(SAVE_FILE+'arinc664_physical_ports_index_reversed_for_A_NET.npy', arinc664_physical_ports_index_reversed_for_A_NET)
+        np.save(SAVE_FILE+'arinc664_physical_ports_index_reversed_for_B_NET.npy', arinc664_physical_ports_index_reversed_for_B_NET)
         #读取方式
         #arinc664_physical_ports_index_for_A_NET = np.load( 'arinc664_physical_ports_index_for_A_NET.npy', allow_pickle='TRUE').item()
 
@@ -1185,7 +1260,7 @@ class GENERATE_FILES_FOR_ROUTING:
 
     #将AFDX网络连接关系的邻接矩阵、A网的邻接矩阵、B网的邻接矩阵以.txt的形式存储
     def save_connections_of_afdx(self):
-        ARINC664_PHYSICAL_PORTS_CONNECTIONS_OF_NET_A_SAVE_PATH = "ARINC664_PHYSICAL_PORTS_CONNECTIONS_OF_NET_A.txt"
+        ARINC664_PHYSICAL_PORTS_CONNECTIONS_OF_NET_A_SAVE_PATH = SAVE_FILE+"ARINC664_PHYSICAL_PORTS_CONNECTIONS_OF_NET_A.txt"
         fw2 = open(ARINC664_PHYSICAL_PORTS_CONNECTIONS_OF_NET_A_SAVE_PATH, 'w+')
         for row_index in range(len(self.arinc664_physical_ports_adjacent_matrix_for_A_NET)):
             for column_index in range(len(self.arinc664_physical_ports_adjacent_matrix_for_A_NET)):
@@ -1195,7 +1270,7 @@ class GENERATE_FILES_FOR_ROUTING:
                     fw2.write("{}  ".format(self.arinc664_physical_ports_adjacent_matrix_for_A_NET[row_index][column_index]))
         fw2.close()
 
-        ARINC664_PHYSICAL_PORTS_CONNECTIONS_OF_NET_B_SAVE_PATH = "ARINC664_PHYSICAL_PORTS_CONNECTIONS_OF_NET_B.txt"
+        ARINC664_PHYSICAL_PORTS_CONNECTIONS_OF_NET_B_SAVE_PATH = SAVE_FILE+"ARINC664_PHYSICAL_PORTS_CONNECTIONS_OF_NET_B.txt"
         fw4 = open(ARINC664_PHYSICAL_PORTS_CONNECTIONS_OF_NET_B_SAVE_PATH, 'w+')
         for row_index in range(len(self.arinc664_physical_ports_adjacent_matrix_for_B_NET)):
             for column_index in range(len(self.arinc664_physical_ports_adjacent_matrix_for_B_NET)):
@@ -1227,7 +1302,7 @@ class GENERATE_FILES_FOR_ROUTING:
     """
     #将网络中的消息以.txt的形式存储
     def save_messages_of_afdx(self):
-        ARINC664_MESSAGES_SAVE_PATH = "ARINC664_MESSAGES.txt"
+        ARINC664_MESSAGES_SAVE_PATH = SAVE_FILE+"ARINC664_MESSAGES.txt"
         fw = open(ARINC664_MESSAGES_SAVE_PATH, 'w+')
         for key in self.messages_info.keys():
             if self.messages_info[key][0] == 'A664':
@@ -1238,7 +1313,7 @@ class GENERATE_FILES_FOR_ROUTING:
                 fw.write("\n")
         fw.close()
 
-        ARINC664_MESSAGES_OF_NET_A_SAVE_PATH = "ARINC664_MESSAGES_OF_NET_A.txt"
+        ARINC664_MESSAGES_OF_NET_A_SAVE_PATH = SAVE_FILE+"ARINC664_MESSAGES_OF_NET_A.txt"
         fw1 = open( ARINC664_MESSAGES_OF_NET_A_SAVE_PATH, 'w+')
         for key in self.messages_info.keys():
             if self.messages_info[ key ][0] == 'A664':
@@ -1254,7 +1329,7 @@ class GENERATE_FILES_FOR_ROUTING:
                     fw1.write("\n")
         fw1.close()
 
-        ARINC664_MESSAGES_OF_NET_B_SAVE_PATH = "ARINC664_MESSAGES_OF_NET_B.txt"
+        ARINC664_MESSAGES_OF_NET_B_SAVE_PATH = SAVE_FILE+"ARINC664_MESSAGES_OF_NET_B.txt"
         fw3 = open( ARINC664_MESSAGES_OF_NET_B_SAVE_PATH, 'w+')
         for key in self.messages_info.keys():
             if self.messages_info[ key ][0] == 'A664':
@@ -1278,3 +1353,33 @@ class GENERATE_FILES_FOR_ROUTING:
                                 fw3.write("     {}".format(self.messages_info[key][9][index1][4][index2]))
                     fw3.write("\n")
         fw3.close()
+
+class SAVE_INTERMEDIATE_FILE:
+    def save_file(self,
+                  physical_ports_information,
+                  physical_ports_adjacent_matrix,
+                  physical_ports_index,
+                  physical_ports_index_reversed,
+                  switches_information,
+                  RDIU_information,
+                  messages_info
+                  ):
+        #保存文件
+        np.save(SAVE_FILE+'physical_ports_information.npy', physical_ports_information)
+        np.save(SAVE_FILE+'physical_ports_index.npy', physical_ports_index)
+        np.save(SAVE_FILE+'physical_ports_index_reversed.npy', physical_ports_index_reversed)
+        np.save(SAVE_FILE+'switches_information.npy', switches_information)
+        np.save(SAVE_FILE+'RDIU_information.npy', RDIU_information)
+        np.save(SAVE_FILE+'messages_info.npy', messages_info)
+        #读取方式
+        #messages_info = np.load( 'messages_info.npy', allow_pickle='TRUE').item()
+
+        physical_ports_adjacent_matrix_SAVE_PATH = SAVE_FILE+"physical_ports_adjacent_matrix.txt"
+        fw = open(physical_ports_adjacent_matrix_SAVE_PATH, 'w+')
+        for row_index in range(len(physical_ports_adjacent_matrix)):
+            for column_index in range(len(physical_ports_adjacent_matrix)):
+                if column_index == len(physical_ports_adjacent_matrix) - 1:
+                    fw.write("{}\n".format(physical_ports_adjacent_matrix[row_index][column_index]))
+                else:
+                    fw.write("{}  ".format(physical_ports_adjacent_matrix[row_index][column_index]))
+        fw.close()

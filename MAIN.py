@@ -8,12 +8,12 @@ if __name__ == "__main__":
 
     """
     获取数据文件"Data Info"(即："root_path/"路径下)所有分系统下硬件设备（./Data Info/***/Hardware/Instances/**.xml）的端口信息、交换机信息以及物理端口连接关系的邻接矩阵
-    physical_ports_index: 字典，键值为physical port full name，格式为: 设备+"."+物理端口名(如: IDURIGHTOUTBOARD.A)，或者: 机柜+"."+设备+"."+物理端口名(如: CCR_LEFT.GPM_L6.A)，value为: [物理端口类型, 物理端口标识符, physical port full name, NameDef, GuidDef, 物理端口方向, 该物理端口所在物理设备名称]
+    physical_ports_information: 字典，键值为physical port full name，格式为: 设备+"."+物理端口名(如: IDURIGHTOUTBOARD.A)，或者: 机柜+"."+设备+"."+物理端口名(如: CCR_LEFT.GPM_L6.A)，value为: [物理端口类型, 物理端口标识符, physical port full name, NameDef, GuidDef, 物理端口方向, 该物理端口所在物理设备名称]
         注意：physical port full name与物理端口名不同，前者描述得更详细
     switches_information: 字典，键值为交换机的Guid，value为: [ 交换机名称(如：ARS_1A, CCR_LEFT.ACS_LA), NameDef, GuidDef, [ 25*[ physical port full name ] ] ]
     RDIU_information: 字典，
     physical_ports_index: 字典，键值为physical port的名称，如：CCR_LEFT.GPM_L6.A，value为：该端口在邻接矩阵中的index
-    physical_ports_index_reserved: 字典，键值为端口在邻接矩阵中的index，value为：该端口的physical port的名称
+    physical_ports_index_reversed: 字典，键值为端口在邻接矩阵中的index，value为：该端口的physical port的名称
     physical_ports_adjacent_matrix：所有物理端口的连接关系
     物理端口类型包括：'AesPhysPort', 'A429PhysPort', 'CANPhysPort', 'AnalogPhysPort', 'AswPhysPort', 'PwrPhysPort'共6种
     一个physical_ports_information的示例：['AnalogPhysPort', 'a0E324550-223F-4e9e-894A-3800179CFC38a', 'AFTBBSOV1.poDISC_FC', 'IAMS_VALVECLASS.poDISC_FC', 'a7E9EEF76-C9D3-48f9-B683-E65C3F3F4273a', 'Source', 'AFTBBSOV1']
@@ -87,6 +87,7 @@ if __name__ == "__main__":
     records = [ [i, 0] for i in range(173) ]
     NUMBER_OF_MESSAGES = 0
     for item in list( messages_per_physical_port.keys() ):
+        print(messages_per_physical_port[item])
         records[ len( messages_per_physical_port[item][1] ) ][1] += 1
         NUMBER_OF_MESSAGES += len( messages_per_physical_port[item][1] )
     print( "records:", records )
@@ -96,3 +97,14 @@ if __name__ == "__main__":
     generate_files_for_routing.counting_connections_of_a_b_net()
     generate_files_for_routing.save_connections_of_afdx()
     generate_files_for_routing.save_messages_of_afdx()
+
+    save_intermediate_file = FUNCTIONAL_CLASS.SAVE_INTERMEDIATE_FILE()
+    save_intermediate_file.save_file(
+        physical_ports_information,
+        physical_ports_adjacent_matrix,
+        physical_ports_index,
+        physical_ports_index_reversed,
+        switches_information,
+        RDIU_information,
+        messages_info
+    )
