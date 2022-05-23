@@ -2,7 +2,7 @@
 将原始数据中消息、物理端口及其连接关系等信息梳理清楚并存储。
 
 ## 原始数据文件
-将原始数据文件（如：ATA 21 AMS、ATA 23 COM等）存放在Data Info文件夹下。
+将原始数据文件（如：ATA 21 AMS、ATA 23 COM等）存放在Data Info文件夹下。\
 Data Info与MAIN.py、FUNCTIONAL_CLASS.py文件存放于同一路径下
 
 ## 全局数据文件
