@@ -4,10 +4,10 @@
 ## 原始数据文件
 将原始数据文件（如：ATA 21 AMS、ATA 23 COM等）存放在Data Info文件夹下。\
 Data Info与MAIN.py、FUNCTIONAL_CLASS.py文件存放于同一路径下
-
+---
 ## 全局数据文件
 统计全局数据（不区分A、B网）中的物理端口、消息、连接关系等的信息并存储
-
+---
 ### Dict: physical_ports_information
 键（key）：物理端口的全称，表示为：physical port full name。形式为：物理端口所属物理设备+"."+物理端口名，如物理设备IDURIGHTOUTBOARD上的A端口--IDURIGHTOUTBOARD.A，或物理端口所属机柜+"."+物理端口所属设备+"."+物理端口名，如机柜CCR_LEFT中物理设备GPM_L6上的A端口--CCR_LEFT.GPM_L6.A\
 值（value）：为一列表，按以下格式存储对应物理端口的相关信息：\
@@ -116,3 +116,7 @@ messages_per_physical_port[physical_port_name] = [physical_port_name, message_ty
 ### Dict: arinc664_physical_ports_index_reversed_for_B_NET
 键（key）：B网中ARINC-664协议物理端口在邻接矩阵arinc664_physical_ports_adjacent_matrix_for_B_NET中的index\
 值（value）：物理端口的全称，physical port full name
+
+***
+***
+
