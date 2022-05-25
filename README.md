@@ -74,6 +74,24 @@ Data Info与MAIN.py、FUNCTIONAL_CLASS.py文件存放于同一路径下
 &emsp;&emsp;&emsp;&emsp;] #9\
 &emsp;&emsp;]
 
+messages_per_physical_port[physical_port_name] = [physical_port_name, message_type, message_size, message_latency, TransmissionIntervalMinimum, guid_of_messages, [ logical_destination_of_message ], [ physical_destination_of_message] ]
+
+### Dict: messages_per_physical_port
+键（key）：物理端口的全称，表示为：physical port full name。形式为：物理端口所属物理设备+"."+物理端口名，如物理设备IDURIGHTOUTBOARD上的A端口--IDURIGHTOUTBOARD.A，或物理端口所属机柜+"."+物理端口所属设备+"."+物理端口名，如机柜CCR_LEFT中物理设备GPM_L6上的A端口--CCR_LEFT.GPM_L6.A\
+值（value）：为一列表，按以下格式存储对应物理端口的相关信息：\
+&emsp;&emsp;[\
+&emsp;&emsp;&emsp;&emsp;物理端口的全称, #0\
+&emsp;&emsp;&emsp;&emsp;消息类型, #1，为一列表，包括：A664, CAN, A429, Analog\
+&emsp;&emsp;&emsp;&emsp;消息大小, #2，为一列表，单位：Byte\
+&emsp;&emsp;&emsp;&emsp;消息的系统延迟要求, #3，为一列表，单位：ms\
+&emsp;&emsp;&emsp;&emsp;消息的发送周期, #4，为一列表，单位：ms\
+&emsp;&emsp;&emsp;&emsp;消息的标识符, #5，为一列表\
+&emsp;&emsp;&emsp;&emsp;消息的目的节点的逻辑端口, #6，因为同一消息可以被发送至多个目的节点，因此每一个消息的目的节点的逻辑端口是一个列表，因此此项是列表的列表，格式为：
+[ [ logical_port_1, logical_port_2, ..., logical_port_m ], ... , [ logical_port_1, logical_port_2, ..., logical_port_n ] ]\
+&emsp;&emsp;&emsp;&emsp;消息的目的节点的物理端口, #7，因为同一消息可以被发送至多个目的节点，而每一个目的节点的消息可能经由A、B两个端口同时转发，因此每一个消息的目的节点的物理端口是一个列表的列表，因此此项是列表的列表的列表，格式为：
+[ [ [ physical_port_A, physical_port_B ], ... , [ physical_port_A, physical_port_B ] ], ..., [ [ physical_port_A ], ..., [ physical_port_B ] ] ]\
+&emsp;&emsp;]
+
 ## A、B网中的数据文件
 分别统计A、B网中的物理端口、消息、连接关系等的信息并存储
 
