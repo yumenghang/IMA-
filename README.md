@@ -179,6 +179,14 @@ ARS_1A.A, CCR_RIGHT.ACS_RA.A, CCR_RIGHT.ACS_RB.B\
 &emsp;&emsp;&emsp;&emsp;[ BAG, MTU, BandWidth, [ message_guid, ..., message_guid ], [ logical_destination, ..., logical_destination ], [ physical_destination, ..., physical_destination ] ], #虚链路n\
 &emsp;&emsp;]
 注：从同一物理端口转发的虚链路可能有很多条，因此要分别记录其参数：BAG、MTU、BandWidth，以及该虚链路包含的消息（以列表的形式记录）、该虚链路的目的节点的逻辑端口（以列表的形式记录）、该虚链路的目的节点的物理端口（以列表的形式记录）
+
+***
+
+## 运行：
+VL_CONFIGURATION.py, MESSAGES_PROCESSING.py, OPTIMIZATION_MODEL.py与MAIN.py, FUNCTIONAL_CLASS.py同目录
+运行VL_CONFIGURATION.py即可： python VL_CONFIGURATION.py （注：VL_CONFIGURATION.py中有两个参数，GAP与TIMELIMITED，分别设置求解的预设精度与预设时间，默认均为None、1200s）
+注意，此版本以Gurobi作为优化器运行
+
 ***
 
 ## RDIU设备内虚链路的处理
