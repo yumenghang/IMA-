@@ -19,6 +19,8 @@ class VL_OF_RDIU():
         print("SIZE_OF_MESSAGE", self.SIZE_OF_MESSAGE)
         print("DELAY_BOUND_OF_MESSAGE", self.DELAY_BOUND_OF_MESSAGE)
         print("PERIOD_OF_MESSAGE", self.PERIOD_OF_MESSAGE)
+        print("self.LOGICAL_DESTINATION_OF_MESSAGE:", self.LOGICAL_DESTINATION_OF_MESSAGE)
+        print("self.PHYSICAL_DESTINATION_OF_MESSAGE:", self.PHYSICAL_DESTINATION_OF_MESSAGE)
         print("self.LOGICAL_DESTINATION_OF_MESSAGE:", len(self.LOGICAL_DESTINATION_OF_MESSAGE))
 
     def vl_of_rdiu_with_period(self, GAP, TIMELIMITED):
@@ -252,7 +254,7 @@ class VL_OF_RDIU():
                     if belong[ message_index ][ virtual_link_index ] == 1:
                         messages_guid.append( self.GUID_OF_MESSAGE[ message_index ] )
                         logical_destination += self.LOGICAL_DESTINATION_OF_MESSAGE[ message_index ]
-                        physical_destination +=  self.PHYSICAL_DESTINATION_OF_MESSAGE[ message_index ]
+                        physical_destination += self.PHYSICAL_DESTINATION_OF_MESSAGE[ message_index ]
                 vl_information.append( messages_guid )
                 vl_information.append( logical_destination )
                 vl_information.append( physical_destination )

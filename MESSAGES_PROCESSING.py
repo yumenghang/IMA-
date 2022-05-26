@@ -64,7 +64,7 @@ class MESSAGES_PREPROCESSED():
                 for NET_TYPE in ["A", "B"]:
                     if locals()[ message_type + "_logical_destination_of_" + NET_TYPE + "_NET" ] != []:
                         locals()[ message_type + "_LOGICAL_DESTINATION_OF_" + NET_TYPE + "_NET" ].append( locals()[ message_type + "_logical_destination_of_" + NET_TYPE + "_NET" ] )
-                        locals()[ message_type + "_PHYSICAL_PORT_OF_" + NET_TYPE + "_NET" ].append( locals()[ message_type + "_physical_destination_of_A_NET" ] )
+                        locals()[ message_type + "_PHYSICAL_PORT_OF_" + NET_TYPE + "_NET" ].append( locals()[ message_type + "_physical_destination_of_" + NET_TYPE + "_NET" ] )
 
             for MESSAGE_TYPE in ["CAN", "A429", "Analog"]:
                 for NET_TYPE in ["A", "B"]:
@@ -82,14 +82,16 @@ class MESSAGES_PREPROCESSED():
                         locals()[ "VL_INFORMATION_OF_" + NET_TYPE + "_NET" ] = vl_of_rdiu.vl_of_rdiu_no_period( GAP, TIMELIMITED )
                     if NET_TYPE == "A":
                         if messages_of_physical_port[0] + ".A" in VL_DICT_OF_A_NET:
-                            VL_DICT_OF_A_NET[ messages_of_physical_port[0] + ".A" ] += [ locals()[ "VL_INFORMATION_OF_" + NET_TYPE + "_NET" ] ]
+                            VL_DICT_OF_A_NET[ messages_of_physical_port[0] + ".A" ] += locals()[ "VL_INFORMATION_OF_" + NET_TYPE + "_NET" ]
                         else:
-                            VL_DICT_OF_A_NET[ messages_of_physical_port[0] + ".A" ] = [ locals()[ "VL_INFORMATION_OF_" + NET_TYPE + "_NET" ] ]
+                            if locals()[ "VL_INFORMATION_OF_" + NET_TYPE + "_NET" ] != []:
+                                VL_DICT_OF_A_NET[ messages_of_physical_port[0] + ".A" ] = locals()[ "VL_INFORMATION_OF_" + NET_TYPE + "_NET" ]
                     else:
                         if messages_of_physical_port[0] + ".B" in VL_DICT_OF_B_NET:
-                            VL_DICT_OF_B_NET[ messages_of_physical_port[0] + ".B" ] += [ locals()[ "VL_INFORMATION_OF_" + NET_TYPE + "_NET" ] ]
+                            VL_DICT_OF_B_NET[ messages_of_physical_port[0] + ".B" ] += locals()[ "VL_INFORMATION_OF_" + NET_TYPE + "_NET" ]
                         else:
-                            VL_DICT_OF_B_NET[ messages_of_physical_port[0] + ".B" ] = [ locals()[ "VL_INFORMATION_OF_" + NET_TYPE + "_NET" ] ]
+                            if locals()[ "VL_INFORMATION_OF_" + NET_TYPE + "_NET" ] != []:
+                                VL_DICT_OF_B_NET[ messages_of_physical_port[0] + ".B" ] = locals()[ "VL_INFORMATION_OF_" + NET_TYPE + "_NET" ]
 
             return [ VL_DICT_OF_A_NET, VL_DICT_OF_B_NET]
         else:
