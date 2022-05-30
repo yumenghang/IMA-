@@ -173,19 +173,22 @@ ARS_1A.A, CCR_RIGHT.ACS_RA.A, CCR_RIGHT.ACS_RB.B\
 键（key）：设备+端口名（A或B），如：RDIU_01.A、RDIU_12.B、CCR_LEFT.GPM_L4.A、L_RPDU_A.B等
 值（value）：为一列表，分别存储以下信息：
 &emsp;&emsp;[\
-&emsp;&emsp;&emsp;&emsp;[ BAG, MTU, BandWidth, [ message_guid, ..., message_guid ], [ logical_destination, ..., logical_destination ], [ physical_destination, ..., physical_destination ] ], #虚链路1\
+&emsp;&emsp;&emsp;&emsp;[ BAG, MTU, BandWidth, [ [ message_guid of subVL0, ... ], [ message_guid of subVL1, ... ], [ message_guid of subVL2, ... ], [ message_guid of subVL3, ... ] ], [ [ logical_destination of subVL0, ... ], [ logical_destination of subVL1, ... ], [ logical_destination of subVL2, ... ], [ logical_destination of subVL3, ... ] ], [ [ physical_destination of subVL0 ], [ physical_destination of subVL1 ], [ physical_destination of subVL2 ], [ physical_destination of subVL3 ] ] ], #虚链路1\
 &emsp;&emsp;&emsp;&emsp;[ BAG, MTU, BandWidth, [ message_guid, ..., message_guid ], [ logical_destination, ..., logical_destination ], [ physical_destination, ..., physical_destination ] ], #虚链路2\
 &emsp;&emsp;&emsp;&emsp;..., #2\
-&emsp;&emsp;&emsp;&emsp;[ BAG, MTU, BandWidth, [ message_guid, ..., message_guid ], [ logical_destination, ..., logical_destination ], [ physical_destination, ..., physical_destination ] ], #虚链路n\
+&emsp;&emsp;&emsp;&emsp;[ BAG, MTU, BandWidth, [ [ message_guid of subVL0, ... ], [ message_guid of subVL1, ... ], [ message_guid of subVL2, ... ], [ message_guid of subVL3, ... ] ], [ [ logical_destination of subVL0, ... ], [ logical_destination of subVL1, ... ], [ logical_destination of subVL2, ... ], [ logical_destination of subVL3, ... ] ], [ [ physical_destination of subVL0 ], [ physical_destination of subVL1 ], [ physical_destination of subVL2 ], [ physical_destination of subVL3 ] ] ], #虚链路n\
 &emsp;&emsp;]
 注：从同一物理端口转发的虚链路可能有很多条，因此要分别记录其参数：BAG、MTU、BandWidth，以及该虚链路包含的消息（以列表的形式记录）、该虚链路的目的节点的逻辑端口（以列表的形式记录）、该虚链路的目的节点的物理端口（以列表的形式记录）
 
 ***
 
 ## 运行：
-VL_CONFIGURATION.py, MESSAGES_PROCESSING.py, OPTIMIZATION_MODEL.py与MAIN.py, FUNCTIONAL_CLASS.py同目录
-运行VL_CONFIGURATION.py即可： python VL_CONFIGURATION.py （注：VL_CONFIGURATION.py中有两个参数，GAP与TIMELIMITED，分别设置求解的预设精度与预设时间，默认均为None、1200s）
-注意，此版本以Gurobi作为优化器运行
+VL_CONFIGURATION.py, MESSAGES_PROCESSING.py, OPTIMIZATION_MODEL.py与MAIN.py, FUNCTIONAL_CLASS.py同目录\n
+运行VL_CONFIGURATION.py即可： python VL_CONFIGURATION.py （注：VL_CONFIGURATION.py中有两个参数，GAP与TIMELIMITED，分别设置求解的预设精度与预设时间，默认均为None、1200s）\n
+注意：\n
+1、此版本以Gurobi作为优化器运行\n
+2、VL_CONFIGURATION.py中定义了两个参数：GAP, TIMELIMITED = None, 600，分别用于设置求解精度以及求解时间上限。这里GAP定义为None，表示求解精度不做要求，TIMELIMITED设置为600s。TIMELIMITED有两个作用：a）在RDIU内，当因为消息数目过多，导致短时间内无法求出最优解时，TIMELIMITED为最终的求解时间上限；b）在End System内，因为消息数目过多，导致短时间内无法求出最优解时，TIMELIMITED是作为时间单位参与的。具体的求解时间上限是ARINC664消息数目除以10的余数再乘以TIMELIMITED，作为最终的求解时间上限。举例：当消息数目为78时，求解时间上限是：int(78/10)$\times$TIMELIMITED = 4200（s）。
+因此，运行一遍程序耗时较长。如果不能接受，可以适当调小TIMELIMITED的数值，但不可过小，防止终端内优化问题无法求出解（终端内优化问题参数较多，约束较多，因此耗时较长）。
 
 ***
 
@@ -196,4 +199,4 @@ VL_CONFIGURATION.py, MESSAGES_PROCESSING.py, OPTIMIZATION_MODEL.py与MAIN.py, FU
 ***
 
 ## End System内虚链路的处理 
-
+首先将终端（End System）内需要转发的ARINC664消息，分别以目的节点为A端口或者B端口进行划分
